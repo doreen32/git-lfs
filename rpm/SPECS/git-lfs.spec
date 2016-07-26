@@ -24,19 +24,21 @@ Enterprise.
 
 %prep
 %setup -q -n %{name}-%{version}
+export GOPATH=`pwd`
 mkdir -p src/github.com/github
 ln -s $(pwd) src/github.com/github/%{name}
+cd src/github.com/github/%{name}
 
 %build
 %if 0%{?rhel} == 5
   export CGO_ENABLED=0
 %endif
 %if %{_arch} == i386
-  GOARCH=386 GOPATH=`pwd` ./script/bootstrap
+  GOARCH=386 ./script/bootstrap
 %else
-  GOARCH=amd64 GOPATH=`pwd` ./script/bootstrap
+  GOARCH=amd64 ./script/bootstrap
 %endif
-GOPATH=`pwd` ./script/man
+./script/man
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
