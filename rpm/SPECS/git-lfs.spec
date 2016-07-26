@@ -27,7 +27,7 @@ Enterprise.
 export GOPATH=`pwd`
 mkdir -p src/github.com/github
 ln -s $(pwd) src/github.com/github/%{name}
-cd src/github.com/github/%{name}
+pushd src/github.com/github/%{name}
 
 %build
 %if 0%{?rhel} == 5
@@ -39,6 +39,7 @@ cd src/github.com/github/%{name}
   GOARCH=amd64 ./script/bootstrap
 %endif
 ./script/man
+popd
 
 %install
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf $RPM_BUILD_ROOT
@@ -52,8 +53,10 @@ install -D man/*.5 ${RPM_BUILD_ROOT}/usr/share/man/man5
 export GOPATH=`pwd`
 export GIT_LFS_TEST_DIR=$(mktemp -d)
 
+pushd src/github.com/github/%{name}
 ./script/test
 ./script/integration
+popd
 
 rmdir ${GIT_LFS_TEST_DIR}
 
